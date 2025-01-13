@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>News Management</title>
+    <style>
+        body { 
+            font-family: Arial; 
+            max-width: 800px; 
+            margin: 20px auto; 
+            padding: 20px;
+        }
+        .form-group { margin-bottom: 15px; }
+        button { padding: 5px 10px; margin: 5px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px; text-align: left; border: 1px solid #ddd; }
+        .error { color: red; }
+        .success { color: green; }
+        nav { margin-bottom: 20px; }
+        nav a { margin-right: 10px; }
+        textarea { width: 100%; min-height: 100px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">User Management</a>
+        <a href="news.html">News Management</a>
+        <a href="api-docs.html">API Documentation</a>
+    </nav>
+
+    <h1>News Management</h1>
+
+    <div id="addNewsForm">
+        <h2>Add News Article</h2>
+        <div class="form-group">
+            <label>Title: </label>
+            <input type="text" id="newsTitle" required>
+        </div>
+        <div class="form-group">
+            <label>Content: </label>
+            <textarea id="newsContent" required></textarea>
+        </div>
+        <button onclick="addNews()">Add News</button>
+    </div>
+
+    <div id="newsList">
+        <h2>News List</h2>
+        <input type="text" id="searchTerm" placeholder="Search news...">
+        <button onclick="searchNews()">Search</button>
+        <button onclick="loadNews()">Show All</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Content</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="newsTableBody"></tbody>
+        </table>
+    </div>
+
+    <script>
+        loadNews();
+
+        async function loadNews() {
+            try {
+                const response = await fetch('/api/news');
+                const news = await response.json();
+                displayNews(news);
+            } catch (error) {
+                showError('Error loading news');
+            }
+        }
+
+        async function addNews() {
+            const title = document.getElementById('newsTitle').value;
+            const content = document.getElementById('newsContent').value;
+        
+            try {
+                const response = await fetch('/api/news', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, content })
+                });
+        
+                if (response.ok) {
+                    document.getElementById('newsTitle').value = '';
+                    document.getElementById('newsContent').value = '';
+                    loadNews();
+                } else {
+                    const error = await response.json();
+                    showError(error.message);
+                }
+            } catch (error) {
+                showError('Error adding news');
+            }
+        }
+
+        async function deleteNews(id) {
+            if (confirm('Are you sure you want to delete this news article?')) {
+                try {
+                    const response = await fetch(`/api/news/${id}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        loadNews();
+                    }
+                } catch (error) {
+                    showError('Error deleting news');
+                }
+            }
+        }
+
+        async function searchNews() {
+            const term = document.getElementById('searchTerm').value;
+            try {
+                const response = await fetch(`/api/news/search?q=${term}`);
+                const news = await response.json();
+                displayNews(news);
+            } catch (error) {
+                showError('Error searching news');
+            }
+        }
+
+        function displayNews(news) {
+            const tbody = document.getElementById('newsTableBody');
+            tbody.innerHTML = news.map(article => `
+                <tr>
+                    <td>${article.id}</td>
+                    <td>${article.title}</td>
+                    <td>${article.content.substring(0, 100)}...</td>
+                    <td>
+                        <button onclick="deleteNews(${article.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function showError(message) {
+            const error = document.createElement('div');
+            error.className = 'error';
+            error.textContent = message;
+            document.body.insertBefore(error, document.body.firstChild);
+            setTimeout(() => error.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

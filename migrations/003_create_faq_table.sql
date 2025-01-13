@@ -1,0 +1,10 @@
+-- based on my laravel project migrations since i use the same DATABASE --
+
+CREATE TABLE IF NOT EXISTS faq (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    category VARCHAR(255) NOT NULL,
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

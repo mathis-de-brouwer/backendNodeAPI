@@ -1,27 +1,43 @@
 const express = require('express');
 const connection = require('./config/database');
+const runMigrations = require('./config/migrations');
+const userRoutes = require('./routes/users');
+const newsRoutes = require('./routes/news');
 const app = express();
 const port = 3000;
 
-// middleware to parse JSON req
-app.use(express.json());
+(async () => {
+    try {
+        await runMigrations();
+        
+        app.use(express.static('public'));
+        app.use(express.json());
+        
+        // api routes
+        app.use('/api/users', userRoutes);
+        app.use('/api/news', newsRoutes);
 
-// root endpoint
-app.get('/', (req, res) => {
-    // Fetch data from the database
-    connection.query('SELECT * FROM users', (err, results) => {
-      if (err) {
-        console.error('Error fetching data:', err);
-        res.status(500).send('Error fetching data from database');
-        return;
-      }
-      // Send the data as a JSON response
-      res.json(results);
-    });
-  });
+        // middleware error
+        app.use((err, req, res, next) => {
+            console.error(err.stack);
+            res.status(500).json({ error: 'Something went wrong!' });
+        });
 
-// start server
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+        // 404
+        app.use((req, res) => {
+            res.status(404).json({ error: 'Route not found' });
+        });
+
+        app.listen(port, () => {
+            console.log(`Server running on http://localhost:${port}`);
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error);
+        process.exit(1);
+    }
+})();
+
+process.on('SIGTERM', () => {
+    connection.end();
+    process.exit(0);
 });
-

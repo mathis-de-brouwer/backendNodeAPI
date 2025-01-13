@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Documentation</title>
+    <style>
+        body { 
+            font-family: Arial; 
+            max-width: 1000px; 
+            margin: 20px auto; 
+            padding: 20px;
+        }
+        nav { margin-bottom: 20px; }
+        nav a { margin-right: 10px; }
+        .endpoint {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        .method {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .get { background: #61affe; color: white; }
+        .post { background: #49cc90; color: white; }
+        .put { background: #fca130; color: white; }
+        .delete { background: #f93e3e; color: white; }
+        .path { 
+            font-family: monospace;
+            margin-left: 10px;
+        }
+        .description {
+            margin: 10px 0;
+        }
+        h3 { margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">User Management</a>
+        <a href="news.html">News Management</a>
+        <a href="api-docs.html">API Documentation</a>
+    </nav>
+
+    <h1>API Documentation</h1>
+
+    <h2>Users Endpoints</h2>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="path">/api/users</span>
+        <p class="description">Get all users with pagination support.</p>
+        <p>Query parameters:</p>
+        <ul>
+            <li>limit (optional): Number of records to return (default: 10)</li>
+            <li>offset (optional): Number of records to skip (default: 0)</li>
+        </ul>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="path">/api/users/:id</span>
+        <p class="description">Get a specific user by ID.</p>
+    </div>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="path">/api/users</span>
+        <p class="description">Create a new user.</p>
+        <p>Required fields:</p>
+        <ul>
+            <li>name (string): User's name (cannot contain numbers)</li>
+            <li>email (string): User's email address</li>
+            <li>password (string): User's password</li>
+        </ul>
+    </div>
+
+    <div class="endpoint">
+        <span class="method put">PUT</span>
+        <span class="path">/api/users/:id</span>
+        <p class="description">Update an existing user.</p>
+    </div>
+
+    <div class="endpoint">
+        <span class="method delete">DELETE</span>
+        <span class="path">/api/users/:id</span>
+        <p class="description">Delete a user.</p>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="path">/api/users/search?q=term</span>
+        <p class="description">Search users by name or email.</p>
+    </div>
+
+    <h2>News Endpoints</h2>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="path">/api/news</span>
+        <p class="description">Get all news articles with pagination support.</p>
+        <p>Query parameters:</p>
+        <ul>
+            <li>limit (optional): Number of records to return (default: 10)</li>
+            <li>offset (optional): Number of records to skip (default: 0)</li>
+        </ul>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="path">/api/news/:id</span>
+        <p class="description">Get a specific news article by ID.</p>
+    </div>
+
+    <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="path">/api/news</span>
+        <p class="description">Create a new news article.</p>
+        <p>Required fields:</p>
+        <ul>
+            <li>title (string): Article title</li>
+            <li>content (string): Article content</li>
+        </ul>
+    </div>
+
+    <div class="endpoint">
+        <span class="method put">PUT</span>
+        <span class="path">/api/news/:id</span>
+        <p class="description">Update an existing news article.</p>
+    </div>
+
+    <div class="endpoint">
+        <span class="method delete">DELETE</span>
+        <span class="path">/api/news/:id</span>
+        <p class="description">Delete a news article.</p>
+    </div>
+
+    <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="path">/api/news/search?q=term</span>
+        <p class="description">Search news articles by title or content.</p>
+    </div>
+</body>
+</html>
