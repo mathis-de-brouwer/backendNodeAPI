@@ -1,16 +1,27 @@
 const express = require('express');
+const connection = require('./config/database');
 const app = express();
 const port = 3000;
 
-// Middleware to parse JSON requests
+// middleware to parse JSON req
 app.use(express.json());
 
-// Root endpoint
+// root endpoint
 app.get('/', (req, res) => {
-  res.send('Hello, this is your Node.js API!');
-});
+    // Fetch data from the database
+    connection.query('SELECT * FROM users', (err, results) => {
+      if (err) {
+        console.error('Error fetching data:', err);
+        res.status(500).send('Error fetching data from database');
+        return;
+      }
+      // Send the data as a JSON response
+      res.json(results);
+    });
+  });
 
-// Start the server
+// start server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+
